@@ -38,11 +38,8 @@ simulationCanvas.appendChild(renderer.domElement);
 camera.aspect = simulationCanvas.clientWidth / simulationCanvas.clientHeight;
 camera.updateProjectionMatrix();
 
-
-// cam control setup
+// cam controls
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
-// controls.enableDamping = true; // Optional, but this gives a smoother control feel
-// controls.dampingFactor = 0.05;
 
 
 // Ball
@@ -55,7 +52,7 @@ scene.add(ball);
 const floorGeometry = new THREE.PlaneGeometry(1000, 1000); // Adjust size as needed
 const floorMaterial = new THREE.MeshPhongMaterial({ color: 0x808080, side: THREE.DoubleSide });
 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-floor.rotation.x = -Math.PI / 2; // Rotate to lay flat
+floor.rotation.x = -Math.PI / 2; // Lay flat
 floor.position.y = -1; // Adjust position as needed
 scene.add(floor);
 
@@ -217,38 +214,10 @@ document.getElementById('calculateButton').addEventListener('click', function() 
         currentStep = 0;
         animationActive = true;
     } else {
-        // Optional: Display a message to the user indicating that all fields are required
+        // error message in red
         document.getElementById('feedback').innerText = 'Please fill all the required fields.';
         document.getElementById('feedback').style = "color: red; font-weight: bold";
         console.log('Please fill all the required fields.');
         document.getElementById('animateButton').disabled = true;
     }
 });
-
-
-// document.getElementById('calculateButton').addEventListener('click', function() {
-//     const mass = parseFloat(document.getElementById('mass').value);
-//     const dragArea = parseFloat(document.getElementById('dragArea').value);
-//     const initialHeight = parseFloat(document.getElementById('height').value);
-//     const initialVelocity = parseFloat(document.getElementById('velocity').value);
-//     const angle = parseFloat(document.getElementById('angle').value);
-//     const airDensity = parseFloat(document.getElementById('airDensity').value);
-//     const gravity = parseFloat(document.getElementById('gravity').value);
-//     const duration = parseFloat(document.getElementById('duration').value);
-//     stepSize = parseFloat(document.getElementById('stepSize').value);
-
-//     // Call the trajectory calculation function
-//     const results = calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, angle, airDensity, gravity, stepSize, duration);
-//     trajectoryPoints = results.trajectoryPoints;
-
-//     document.getElementById('maxHeight').innerText = "Max Height: " + results.maxHeight.toFixed(2) + " m";
-//     document.getElementById('maxVelocity').innerText = "Max Velocity: " + results.maxVelocity.toFixed(2) + " m/s";
-//     document.getElementById('horizontalDistance').innerText = "Horizontal Distance: " + results.horizontalDistance.toFixed(2) + " m";
-//     document.getElementById('timeInFlight').innerText = "Time in Flight: " + results.timeInFlight.toFixed(2) + " s";
-
-//     document.getElementById('feedback').innerText = 'Calculation complete! Ready to animate.';
-//     document.getElementById('animateButton').disabled = false;
-//     currentStep = 0;
-//     animationActive = true;
-// });
-
