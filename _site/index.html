@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ball Trajectory Simulation</title>
+    <style>
+        #simulationCanvas {
+            width: 100%;
+            height: 400px;
+            border: 1px solid black;
+        }
+        .control-panel {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="control-panel">
+        <label for="mass">Mass (kg):</label>
+        <input type="number" id="mass" name="mass" min="0.1" step="0.1" value="1" required><br>
+    
+        <label for="dragArea">Drag Surface Area (m²):</label>
+        <input type="number" id="dragArea" name="dragArea" min="0.01" step="0.01" value="0.05" required><br>
+    
+        <label for="height">Initial Height (m):</label>
+        <input type="number" id="height" name="height" min="0" step="0.1" value="0" required><br>
+    
+        <label for="velocity">Initial Velocity (m/s):</label>
+        <input type="number" id="velocity" name="velocity" min="0" step="0.1" value="1" required><br>
+    
+        <label for="angle">Launch Angle (degrees):</label>
+        <input type="number" id="angle" name="angle" min="0" max="90" step="1" value="45" required><br>
+    
+        <label for="airDensity">Air Density (kg/m³):</label>
+        <input type="number" id="airDensity" name="airDensity" min="0" step="0.01" value="1.225" required><br>
+    
+        <label for="gravity">Gravity (m/s²):</label>
+        <input type="number" id="gravity" name="gravity" step="0.01" value="9.81" required><br>
+    
+        <label for="stepSize">Step Size (s):</label>
+        <input type="number" id="stepSize" name="stepSize" min="0.01" step="0.01" value="0.05" required><br>
+    
+        <label for="duration">Duration (s):</label>
+        <input type="number" id="duration" name="duration" min="1" step="1" value="10" required><br>
+    
+        <label for="runUntilGround">Run Until Height ≤ 0:</label>
+        <input type="checkbox" id="runUntilGround" name="runUntilGround"><br>
+    
+        <label for="ballColor">Ball Color (hex):</label>
+        <input type="color" id="ballColor" name="ballColor" value="#ff0000"><br>
+    
+        <button id="calculateButton">Calculate</button>
+        <button id="animateButton" disabled>Animate</button>
+    
+        <div id="feedback" style="margin-top: 10px;"></div>
+    </div>    
+
+    <div id="simulationCanvas"></div>
+
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="simulation.js"></script> <!-- Link to our Three.js logic -->
+</body>
+</html>
