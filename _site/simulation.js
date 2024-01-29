@@ -4,6 +4,32 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 const simulationCanvas = document.getElementById('simulationCanvas');
 
+// scale setup
+const size = 500;  // Size of the grid
+const divisions = 50;  // Number of divisions on the grid
+
+const gridHelper = new THREE.GridHelper(size, divisions);
+scene.add(gridHelper);
+
+const loader = new THREE.FontLoader();
+
+loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+    
+    const markerMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+    
+    for (let i = 0; i <= 500; i += 10) {
+        const markerGeometry = new THREE.TextGeometry(i.toString(), {
+            font: font,
+            size: 1,   // Adjust the size as needed
+            height: 0.1
+        });
+
+        const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+        marker.position.set(i, 0, 0); // Adjust y and z as needed
+        scene.add(marker);
+    }
+});
+
 // Set renderer size to match the simulationCanvas div
 renderer.setSize(simulationCanvas.clientWidth, simulationCanvas.clientHeight);
 simulationCanvas.appendChild(renderer.domElement);
@@ -169,9 +195,5 @@ document.getElementById('calculateButton').addEventListener('click', function() 
     document.getElementById('feedback').innerText = 'Calculation complete! Ready to animate.';
     document.getElementById('animateButton').disabled = false;
     currentStep = 0;        // Reset the animation step
-});
-
-document.getElementById('animateButton').addEventListener('click', function() {
-    animationActive = !animationActive; // Toggle animation on/off
 });
 
