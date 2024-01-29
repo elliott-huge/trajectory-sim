@@ -8,31 +8,33 @@
         body {
             font-family: Arial, sans-serif;
         }
-
+    
         h1 {
             text-align: center;
         }
-
+    
         .control-panel {
             display: flex;
             justify-content: space-around;
+            flex-wrap: wrap; /* Allow items to wrap */
             margin-bottom: 16px;
         }
-
+    
         .control-group {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            margin-bottom: 20px; /* Add some space between wrapped items */
         }
-
+    
         .control-group label, .control-group input, .control-group h2, .control-group button {
             margin-top: 6px;
         }
-
+    
         label {
             font-weight: 700;
         }
-
+    
         #simulationCanvas {
             width: 100%;
             height: 640px;
@@ -43,8 +45,20 @@
             color: red;
             text-decoration: underline;
         }
-
+    
+        /* Media Query for smaller screens */
+        @media (max-width: 768px) {
+            .control-panel {
+                flex-direction: column;
+                align-items: center;
+            }
+    
+            .control-group {
+                width: 100%; /* Makes each control group full width */
+            }
+        }
     </style>
+    
 </head>
 <body>
     <h1>Projectile with Drag Simulator</h1>
