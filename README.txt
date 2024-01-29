@@ -1,0 +1,1 @@
+This project should simulate simple objects being cast in a given direction in a user friendly way. Incorporating SUVATS and drag
