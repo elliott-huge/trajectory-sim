@@ -1,8 +1,23 @@
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.getElementById('simulationCanvas').appendChild(renderer.domElement);
+const simulationCanvas = document.getElementById('simulationCanvas');
+
+// Set renderer size to match the simulationCanvas div
+renderer.setSize(simulationCanvas.clientWidth, simulationCanvas.clientHeight);
+simulationCanvas.appendChild(renderer.domElement);
+
+// Update camera aspect ratio based on the size of the simulationCanvas
+camera.aspect = simulationCanvas.clientWidth / simulationCanvas.clientHeight;
+camera.updateProjectionMatrix();
+
+
+// cam control setup
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+// controls.enableDamping = true; // Optional, but this gives a smoother control feel
+// controls.dampingFactor = 0.05;
+
 
 // Ball
 const geometry = new THREE.SphereGeometry(1, 32, 32);
@@ -11,7 +26,7 @@ const ball = new THREE.Mesh(geometry, material);
 scene.add(ball);
 
 // Floor
-const floorGeometry = new THREE.PlaneGeometry(10, 10); // Adjust size as needed
+const floorGeometry = new THREE.PlaneGeometry(1000, 1000); // Adjust size as needed
 const floorMaterial = new THREE.MeshPhongMaterial({ color: 0x808080, side: THREE.DoubleSide });
 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.rotation.x = -Math.PI / 2; // Rotate to lay flat
@@ -47,7 +62,7 @@ function animate() {
         accumulatedTime -= fixedTimeStep;
     }
     console.log("Animation Active:", animationActive);
-
+    controls.update();
     renderer.render(scene, camera);
 }
 
@@ -74,6 +89,9 @@ function calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, ang
     let velocityY = initialVelocity * Math.sin(angle * Math.PI / 180);
     let positionX = 0;
     let positionY = initialHeight;
+    let maxVelocity = initialVelocity;
+    let maxHeight = initialHeight;
+    let timeInFlight = 0;
 
     for (let t = 0; t <= totalTime; t += timeStep) {
         // Calculate forces
@@ -89,17 +107,25 @@ function calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, ang
         positionX += velocityX * timeStep;
         positionY += velocityY * timeStep;
 
-        // Add point to trajectory
-        trajectoryPoints.push({ x: positionX, y: positionY });
+        // Check for max height and velocity
+        maxHeight = Math.max(maxHeight, positionY);
+        maxVelocity = Math.max(maxVelocity, Math.sqrt(velocityX**2 + velocityY**2));
+
+        // Update time in flight
+        if (positionY > 0) {
+            timeInFlight = t + timeStep;
+        }
 
         // Stop if the object hits the ground
         if (positionY <= 0) {
             break;
         }
-        console.log(trajectoryPoints)
+        // Add point to trajectory
+        trajectoryPoints.push({ x: positionX, y: positionY });
+        
     }
-
-    return trajectoryPoints;
+    console.log(trajectoryPoints)
+    return { trajectoryPoints, maxVelocity, maxHeight, horizontalDistance: positionX, timeInFlight };
 }
 
 // interactive event listeners:
@@ -132,8 +158,13 @@ document.getElementById('calculateButton').addEventListener('click', function() 
     let adjustedDuration = runUntilGround ? Number.MAX_VALUE : duration;
 
     // Call the trajectory calculation function
-    trajectoryPoints = calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, angle, airDensity, gravity, stepSize, duration);
+    const results = calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, angle, airDensity, gravity, stepSize, duration);
+    trajectoryPoints = results.trajectoryPoints;
 
+    document.getElementById('maxHeight').innerText = "Max Height: " + results.maxHeight.toFixed(2) + " m";
+    document.getElementById('maxVelocity').innerText = "Max Velocity: " + results.maxVelocity.toFixed(2) + " m/s";
+    document.getElementById('horizontalDistance').innerText = "Horizontal Distance: " + results.horizontalDistance.toFixed(2) + " m";
+    document.getElementById('timeInFlight').innerText = "Time in Flight: " + results.timeInFlight.toFixed(2) + " s";
 
     document.getElementById('feedback').innerText = 'Calculation complete! Ready to animate.';
     document.getElementById('animateButton').disabled = false;
