@@ -64,8 +64,9 @@ const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(5, 5, 5);
 scene.add(light);
 
-camera.position.z = 5;
+camera.position.set(0, 40, 10);
 
+let stepSize = 0.05; // scary default
 let lastUpdateTime = performance.now();
 let currentStep = 0;
 let animationActive = false;
@@ -85,7 +86,7 @@ function animate() {
             ball.position.set(point.x, point.y, 0);
             currentStep++;
         }
-        accumulatedTime -= fixedTimeStep;
+        accumulatedTime -= stepSize;
     }
     console.log("Animation Active:", animationActive);
     controls.update();
@@ -176,12 +177,8 @@ document.getElementById('calculateButton').addEventListener('click', function() 
     const angle = parseFloat(document.getElementById('angle').value);
     const airDensity = parseFloat(document.getElementById('airDensity').value);
     const gravity = parseFloat(document.getElementById('gravity').value);
-    const stepSize = parseFloat(document.getElementById('stepSize').value);
     const duration = parseFloat(document.getElementById('duration').value);
-    const runUntilGround = document.getElementById('runUntilGround').checked;
-
-    // Adjust duration if 'Run Until Height ≤ 0' is checked
-    let adjustedDuration = runUntilGround ? Number.MAX_VALUE : duration;
+    stepSize = parseFloat(document.getElementById('stepSize').value);
 
     // Call the trajectory calculation function
     const results = calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, angle, airDensity, gravity, stepSize, duration);
@@ -194,6 +191,7 @@ document.getElementById('calculateButton').addEventListener('click', function() 
 
     document.getElementById('feedback').innerText = 'Calculation complete! Ready to animate.';
     document.getElementById('animateButton').disabled = false;
-    currentStep = 0;        // Reset the animation step
+    currentStep = 0;
+    animationActive = true;
 });
 
