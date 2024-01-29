@@ -18,7 +18,7 @@ loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
     const markerMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
     
     for (let i = 0; i <= 500; i += 10) {
-        const markerGeometry = new THREE.TextGeometry(i.toString(), {
+        const markerGeometry = new THREE.TextGeometry(i.toString() + 'm', {
             font: font,
             size: 1,   // Adjust the size as needed
             height: 0.1
@@ -64,7 +64,7 @@ const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(5, 5, 5);
 scene.add(light);
 
-camera.position.set(0, 40, 10);
+camera.position.set(30, 20, 30);
 
 let stepSize = 0.05; // scary default
 let lastUpdateTime = performance.now();
