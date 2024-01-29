@@ -17,7 +17,7 @@ loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
     
     const markerMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
     
-    for (let i = 0; i <= 500; i += 10) {
+    for (let i = 10; i <= 500; i += 10) {
         const markerGeometry = new THREE.TextGeometry(i.toString() + 'm', {
             font: font,
             size: 1,   // Adjust the size as needed
@@ -169,29 +169,86 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let trajectoryPoints = []; // To store calculated trajectory points
 
+function validateInputs() {
+    let isValid = true;
+    // Select all required inputs
+    const inputs = document.querySelectorAll('input[required]');
+    
+    inputs.forEach(input => {
+        // Get the label associated with the input
+        const label = document.querySelector(`label[for="${input.id}"]`);
+
+        if (input.value.trim() === '') {
+            // If the input is empty, add the highlight class to the label
+            label.classList.add('label-highlight');
+            isValid = false; // Set isValid to false if any input is empty
+        } else {
+            // Otherwise, remove the highlight class
+            label.classList.remove('label-highlight');
+        }
+    });
+
+    return isValid;
+}
+
 document.getElementById('calculateButton').addEventListener('click', function() {
-    const mass = parseFloat(document.getElementById('mass').value);
-    const dragArea = parseFloat(document.getElementById('dragArea').value);
-    const initialHeight = parseFloat(document.getElementById('height').value);
-    const initialVelocity = parseFloat(document.getElementById('velocity').value);
-    const angle = parseFloat(document.getElementById('angle').value);
-    const airDensity = parseFloat(document.getElementById('airDensity').value);
-    const gravity = parseFloat(document.getElementById('gravity').value);
-    const duration = parseFloat(document.getElementById('duration').value);
-    stepSize = parseFloat(document.getElementById('stepSize').value);
+    if (validateInputs()) {
+        const mass = parseFloat(document.getElementById('mass').value);
+        const dragArea = parseFloat(document.getElementById('dragArea').value);
+        const initialHeight = parseFloat(document.getElementById('height').value);
+        const initialVelocity = parseFloat(document.getElementById('velocity').value);
+        const angle = parseFloat(document.getElementById('angle').value);
+        const airDensity = parseFloat(document.getElementById('airDensity').value);
+        const gravity = parseFloat(document.getElementById('gravity').value);
+        const duration = parseFloat(document.getElementById('duration').value);
+        stepSize = parseFloat(document.getElementById('stepSize').value);
 
-    // Call the trajectory calculation function
-    const results = calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, angle, airDensity, gravity, stepSize, duration);
-    trajectoryPoints = results.trajectoryPoints;
+        // Call the trajectory calculation function
+        const results = calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, angle, airDensity, gravity, stepSize, duration);
+        trajectoryPoints = results.trajectoryPoints;
 
-    document.getElementById('maxHeight').innerText = "Max Height: " + results.maxHeight.toFixed(2) + " m";
-    document.getElementById('maxVelocity').innerText = "Max Velocity: " + results.maxVelocity.toFixed(2) + " m/s";
-    document.getElementById('horizontalDistance').innerText = "Horizontal Distance: " + results.horizontalDistance.toFixed(2) + " m";
-    document.getElementById('timeInFlight').innerText = "Time in Flight: " + results.timeInFlight.toFixed(2) + " s";
+        document.getElementById('maxHeight').innerText = "Max Height: " + results.maxHeight.toFixed(2) + " m";
+        document.getElementById('maxVelocity').innerText = "Max Velocity: " + results.maxVelocity.toFixed(2) + " m/s";
+        document.getElementById('horizontalDistance').innerText = "Horizontal Distance: " + results.horizontalDistance.toFixed(2) + " m";
+        document.getElementById('timeInFlight').innerText = "Time in Flight: " + results.timeInFlight.toFixed(2) + " s";
 
-    document.getElementById('feedback').innerText = 'Calculation complete! Ready to animate.';
-    document.getElementById('animateButton').disabled = false;
-    currentStep = 0;
-    animationActive = true;
+        document.getElementById('feedback').innerText = 'Calculation ran';
+        document.getElementById('animateButton').disabled = false;
+        currentStep = 0;
+        animationActive = true;
+    } else {
+        // Optional: Display a message to the user indicating that all fields are required
+        document.getElementById('feedback').innerText = 'Please fill all the required fields.';
+        document.getElementById('feedback').style = "color: red; font-weight: bold";
+        console.log('Please fill all the required fields.');
+        document.getElementById('animateButton').disabled = true;
+    }
 });
+
+
+// document.getElementById('calculateButton').addEventListener('click', function() {
+//     const mass = parseFloat(document.getElementById('mass').value);
+//     const dragArea = parseFloat(document.getElementById('dragArea').value);
+//     const initialHeight = parseFloat(document.getElementById('height').value);
+//     const initialVelocity = parseFloat(document.getElementById('velocity').value);
+//     const angle = parseFloat(document.getElementById('angle').value);
+//     const airDensity = parseFloat(document.getElementById('airDensity').value);
+//     const gravity = parseFloat(document.getElementById('gravity').value);
+//     const duration = parseFloat(document.getElementById('duration').value);
+//     stepSize = parseFloat(document.getElementById('stepSize').value);
+
+//     // Call the trajectory calculation function
+//     const results = calculateTrajectory(mass, dragArea, initialHeight, initialVelocity, angle, airDensity, gravity, stepSize, duration);
+//     trajectoryPoints = results.trajectoryPoints;
+
+//     document.getElementById('maxHeight').innerText = "Max Height: " + results.maxHeight.toFixed(2) + " m";
+//     document.getElementById('maxVelocity').innerText = "Max Velocity: " + results.maxVelocity.toFixed(2) + " m/s";
+//     document.getElementById('horizontalDistance').innerText = "Horizontal Distance: " + results.horizontalDistance.toFixed(2) + " m";
+//     document.getElementById('timeInFlight').innerText = "Time in Flight: " + results.timeInFlight.toFixed(2) + " s";
+
+//     document.getElementById('feedback').innerText = 'Calculation complete! Ready to animate.';
+//     document.getElementById('animateButton').disabled = false;
+//     currentStep = 0;
+//     animationActive = true;
+// });
 
